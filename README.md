@@ -1,8 +1,12 @@
 # SWPanel
 
+&nbsp;
+
 <p align="center">
   <img src="docs/hero.svg" width="100%" alt="SWPanel: design your ESPHome touch panel by dragging, then paste the YAML into ESPHome Builder">
 </p>
+
+&nbsp;
 
 A drag-and-drop designer for ESPHome touch panels. Build a Home Assistant dashboard in your browser,
 and SWPanel writes the ESPHome YAML for you. There's no LVGL to learn, and you don't have to write any
@@ -20,10 +24,16 @@ so you only flash the panel once you're happy with the design.
    the display and touch settings for your panel, and your Wi-Fi details and keys stay in `secrets.yaml`.
 
 SWPanel runs as a Home Assistant add-on or on its own in Docker, and can hold a separate design for each
-of your panels. It currently supports [two displays](#supported-displays). The designer doesn't talk to
+of your panels. 
+
+It currently supports [two displays](#supported-displays). The designer doesn't talk to
 the panel directly, so changes reach it the next time you install from ESPHome Builder.
 
-![The SWPanel designer showing a two-page dashboard with live states](docs/designer.jpg)
+&nbsp;
+
+<p align="center">
+  <img src="docs/designer.jpg" alt="The SWPanel designer showing a two-page dashboard with live states">
+</p>
 
 &nbsp;
 
