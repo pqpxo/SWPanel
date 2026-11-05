@@ -1,6 +1,8 @@
 # SWPanel
 
-&nbsp;
+<p align="center">
+  <img src="docs/hero.svg" width="100%" alt="SWPanel: design your ESPHome touch panel by dragging, then paste the YAML into ESPHome Builder">
+</p>
 
 A drag-and-drop designer for ESPHome touch panels. Build a Home Assistant dashboard in your browser,
 and SWPanel writes the ESPHome YAML for you. There's no LVGL to learn, and you don't have to write any
