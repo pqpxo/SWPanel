@@ -1,0 +1,30 @@
+{
+  "device": {"name": "ha-panel-35", "friendly_name": "HA Panel 3.5"},
+  "pages": [
+    {
+      "id": "living_room", "name": "Living Room", "bg": "#1E222B",
+      "elements": [
+        {"id": "title_living", "type": "label", "align": "TOP_LEFT", "x": 16, "y": 14, "text": "Living Room", "text_size": 24, "text_color": "#FFFFFF"},
+        {"id": "wifi", "type": "wifi", "align": "TOP_RIGHT", "x": -16, "y": 14},
+        {"id": "go_status", "type": "page_button", "align": "TOP_RIGHT", "x": -52, "y": 10, "w": 144, "h": 34, "radius": 17, "bg": "#2F3542", "border": "#3B4252", "text": "Home Status", "text_size": 16, "text_color": "#E4E8F0", "chevron": "right", "target": "home_status"},
+        {"id": "tv", "type": "toggle", "align": "TOP_LEFT", "x": 16, "y": 56, "w": 219, "h": 102, "radius": 12, "bg": "#2F3542", "bg_on": "#4A5572", "border": "#3B4252", "text": "TV", "text_size": 16, "text_color": "#E4E8F0", "icon": "television-ambient-light", "icon_size": 32, "icon_color": "#D8DCE4", "icon_color_on": "#F2CF66", "entity": "light.living_room_tv", "show_state": true},
+        {"id": "table", "type": "toggle", "align": "TOP_LEFT", "x": 245, "y": 56, "w": 219, "h": 102, "radius": 12, "bg": "#2F3542", "bg_on": "#4A5572", "border": "#3B4252", "text": "Table", "text_size": 16, "text_color": "#E4E8F0", "icon": "table-furniture", "icon_size": 32, "icon_color": "#D8DCE4", "icon_color_on": "#F2CF66", "entity": "light.living_room_table", "show_state": true},
+        {"id": "fire", "type": "toggle", "align": "TOP_LEFT", "x": 16, "y": 168, "w": 219, "h": 102, "radius": 12, "bg": "#2F3542", "bg_on": "#4A5572", "border": "#3B4252", "text": "Fire", "text_size": 16, "text_color": "#E4E8F0", "icon": "fireplace", "icon_size": 32, "icon_color": "#D8DCE4", "icon_color_on": "#F2CF66", "entity": "light.living_room_fire", "show_state": true},
+        {"id": "lamps", "type": "toggle", "align": "TOP_LEFT", "x": 245, "y": 168, "w": 219, "h": 102, "radius": 12, "bg": "#2F3542", "bg_on": "#4A5572", "border": "#3B4252", "text": "Lamps", "text_size": 16, "text_color": "#E4E8F0", "icon": "floor-lamp-outline", "icon_size": 32, "icon_color": "#D8DCE4", "icon_color_on": "#F2CF66", "entity": "light.living_room_lamps", "show_state": true},
+        {"id": "conn", "type": "conn", "align": "BOTTOM_MID", "x": 0, "y": -14, "text_size": 14, "text_color": "#8F98AA"}
+      ]
+    },
+    {
+      "id": "home_status", "name": "Home Status", "bg": "#1E222B",
+      "elements": [
+        {"id": "title_status", "type": "label", "align": "TOP_LEFT", "x": 16, "y": 14, "text": "Home Status", "text_size": 24, "text_color": "#FFFFFF"},
+        {"id": "home_icon", "type": "icon", "align": "TOP_RIGHT", "x": -16, "y": 14, "icon": "home-outline", "icon_size": 24, "icon_color": "#9DB4E8"},
+        {"id": "go_living", "type": "page_button", "align": "TOP_RIGHT", "x": -52, "y": 10, "w": 144, "h": 34, "radius": 17, "bg": "#2F3542", "border": "#3B4252", "text": "Living Room", "text_size": 16, "text_color": "#E4E8F0", "chevron": "left", "target": "living_room"},
+        {"id": "door", "type": "status", "align": "TOP_LEFT", "x": 16, "y": 56, "w": 219, "h": 116, "radius": 12, "bg": "#2F3542", "border": "#3B4252", "text": "Front Door", "text_size": 16, "text_color": "#E4E8F0", "icon_size": 32, "entity": "lock.front_door", "on_state": "locked", "on_text": "Locked", "on_icon": "lock-outline", "on_color": "#6BCB77", "off_state": "unlocked", "off_text": "Unlocked", "off_icon": "lock-open-variant-outline", "off_color": "#F2B84B"},
+        {"id": "temp", "type": "sensor", "align": "TOP_LEFT", "x": 245, "y": 56, "w": 219, "h": 116, "radius": 12, "bg": "#2F3542", "border": "#3B4252", "text": "Temperature", "text_size": 16, "text_color": "#E4E8F0", "icon": "thermometer", "icon_size": 32, "icon_color": "#F2B84B", "entity": "sensor.living_room_temperature", "unit": "°C", "decimals": 1, "value_size": 22, "value_color": "#FFFFFF"},
+        {"id": "status", "type": "toggle", "align": "TOP_LEFT", "x": 16, "y": 184, "w": 448, "h": 76, "radius": 12, "bg": "#4A5572", "bg_on": "#4A5572", "border": "#3B4252", "text": "All Systems Normal", "text_size": 20, "text_color": "#FFFFFF", "icon": "", "icon_size": 32, "icon_color": "#D8DCE4", "icon_color_on": "#F2CF66", "entity": "light.example", "show_state": false},
+        {"id": "footer_status", "type": "label", "align": "BOTTOM_MID", "x": 0, "y": -14, "text": "Dashboard • Home", "text_size": 14, "text_color": "#8F98AA"}
+      ]
+    }
+  ]
+}

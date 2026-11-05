@@ -1,0 +1,544 @@
+# Waveshare 3.5inch RPi LCD (A) on an ESP32 DevKit V1 (ESP-WROOM-32),
+# as a two-page Home Assistant dashboard. Header buttons switch pages instantly.
+#
+# Panel: ILI9486 (480x320) fed via 74HC4094 shift registers, so it needs 16-bit SPI
+# writes (spi_16: true). Touch: XPT2046 resistive, on the same SPI bus.
+#
+# Wiring (display header pin -> DevKit V1 silkscreen label):
+#   2  (5V)            -> VIN
+#   1  (3.3V)          -> 3V3
+#   6  (GND)           -> GND
+#   23 (LCD/TP SCK)    -> D18  (GPIO18)
+#   19 (LCD/TP SI)     -> D23  (GPIO23, MOSI)
+#   21 (TP SO)         -> D19  (GPIO19, MISO, touch only)
+#   24 (LCD_CS)        -> D22  (GPIO22)
+#   18 (LCD_RS / DC)   -> D21  (GPIO21)
+#   22 (RST)           -> D17  (GPIO17, labelled TX2 on some boards)
+#   26 (TP_CS)         -> D16  (GPIO16, labelled RX2 on some boards)
+#   11 (TP_IRQ)        -> D4   (GPIO4)
+# Backlight has no control pin on this board; it is always on.
+
+substitutions:
+  name: ha-panel-35
+  friendly_name: HA Panel 3.5
+
+  # Living Room buttons (top-left, top-right, bottom-left, bottom-right)
+  tv_entity: light.living_room_tv
+  table_entity: light.living_room_table
+  fire_entity: light.living_room_fire
+  lamps_entity: light.living_room_lamps
+  # Home Status button
+  status_button_entity: light.example
+
+  # Home Status sensors. Show "--" until they get a value.
+  door_lock_entity: lock.front_door
+  temperature_entity: sensor.living_room_temperature
+
+  # Palette
+  col_bg: "0x1E222B"
+  col_tile: "0x2F3542"
+  col_tile_border: "0x3B4252"
+  col_tile_on: "0x4A5572"
+  col_tile_pressed: "0x3A4152"
+  col_text: "0xE4E8F0"
+  col_muted: "0x8F98AA"
+  col_icon: "0xD8DCE4"
+  col_yellow: "0xF2CF66"
+  col_green: "0x6BCB77"
+  col_amber: "0xF2B84B"
+  col_red: "0xE06C75"
+  col_blue: "0x9DB4E8"
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+logger:
+  # DEBUG logs every touch sample over 115200 baud serial, which stalls the loop
+  level: INFO
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+    encryption:
+      key: !secret api_encryption_key
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+# Material Design Icons, pinned to v7.4.47. Codepoints:
+#   F1356 television-ambient-light  F05BC table-furniture  F0E2E fireplace
+#   F17C8 floor-lamp-outline        F050F thermometer      F0341 lock-outline
+#   F0FC7 lock-open-variant-outline
+#   F06A1 home-outline        F05A9 wifi                F05AA wifi-off
+font:
+  - file: "https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/v7.4.47/fonts/materialdesignicons-webfont.ttf"
+    id: icons_32
+    size: 32
+    bpp: 4
+    glyphs:
+      - "\U000F1356"
+      - "\U000F05BC"
+      - "\U000F0E2E"
+      - "\U000F17C8"
+      - "\U000F050F"
+      - "\U000F0341"
+      - "\U000F0FC7"
+  - file: "https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/v7.4.47/fonts/materialdesignicons-webfont.ttf"
+    id: icons_24
+    size: 24
+    bpp: 4
+    glyphs:
+      - "\U000F06A1"
+      - "\U000F05A9"
+      - "\U000F05AA"
+
+spi:
+  - id: spi_bus
+    clk_pin: GPIO18
+    mosi_pin: GPIO23
+    miso_pin: GPIO19
+
+display:
+  - platform: mipi_spi
+    id: tft
+    spi_id: spi_bus
+    model: ILI9486
+    spi_16: true
+    cs_pin: GPIO22
+    dc_pin: GPIO21
+    reset_pin: GPIO17
+    # 20MHz corrupted the image over jumper wires; 16MHz is clean
+    data_rate: 16MHz
+    invert_colors: false
+    color_order: bgr
+    auto_clear_enabled: false
+    update_interval: never
+
+touchscreen:
+  - platform: xpt2046
+    id: touch
+    spi_id: spi_bus
+    display: tft
+    cs_pin: GPIO16
+    interrupt_pin:
+      number: GPIO4
+      mode:
+        input: true
+        pullup: true
+    threshold: 400
+    # Rough starting values; see calibration notes in the README.
+    # Map raw touch to the panel's native portrait axes (320 wide, 480 tall).
+    # LVGL applies the 90 degree rotation to touches itself.
+    calibration:
+      x_min: 280
+      x_max: 3860
+      y_min: 340
+      y_max: 3860
+    # Both axes reversed on this panel (top-left was hitting bottom-right)
+    transform:
+      swap_xy: false
+      mirror_x: true
+      mirror_y: true
+    on_touch:
+      - lambda: |-
+          ESP_LOGI("cal", "x=%d y=%d x_raw=%d y_raw=%d",
+                   touch.x, touch.y, touch.x_raw, touch.y_raw);
+
+# Device tiles light up whenever their entity isn't off/unavailable.
+text_sensor:
+  - platform: homeassistant
+    id: ha_tv
+    entity_id: ${tv_entity}
+    on_value:
+      - lvgl.widget.update:
+          id: btn_tv
+          state:
+            checked: !lambda 'return x != "off" && x != "unavailable" && x != "unknown" && x != "standby";'
+  - platform: homeassistant
+    id: ha_table
+    entity_id: ${table_entity}
+    on_value:
+      - lvgl.widget.update:
+          id: btn_table
+          state:
+            checked: !lambda 'return x != "off" && x != "unavailable" && x != "unknown" && x != "standby";'
+  - platform: homeassistant
+    id: ha_fire
+    entity_id: ${fire_entity}
+    on_value:
+      - lvgl.widget.update:
+          id: btn_fire
+          state:
+            checked: !lambda 'return x != "off" && x != "unavailable" && x != "unknown" && x != "standby";'
+  - platform: homeassistant
+    id: ha_lamps
+    entity_id: ${lamps_entity}
+    on_value:
+      - lvgl.widget.update:
+          id: btn_lamps
+          state:
+            checked: !lambda 'return x != "off" && x != "unavailable" && x != "unknown" && x != "standby";'
+  - platform: homeassistant
+    id: ha_door
+    entity_id: ${door_lock_entity}
+    on_value:
+      - if:
+          condition:
+            lambda: 'return x == "locked";'
+          then:
+            - lvgl.label.update:
+                id: icon_door
+                text: "\U000F0341"
+                text_color: ${col_green}
+            - lvgl.label.update:
+                id: lbl_door_state
+                text: "Locked"
+                text_color: ${col_green}
+          else:
+            - lvgl.label.update:
+                id: icon_door
+                text: "\U000F0FC7"
+                text_color: ${col_amber}
+            - lvgl.label.update:
+                id: lbl_door_state
+                text: !lambda 'return x == "unlocked" ? std::string("Unlocked") : x;'
+                text_color: ${col_amber}
+
+sensor:
+  - platform: homeassistant
+    id: ha_temperature
+    entity_id: ${temperature_entity}
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temp
+          text:
+            format: "%.1f°C"
+            args: [x]
+
+# Header Wi-Fi icon and footer connection text
+interval:
+  - interval: 5s
+    then:
+      - if:
+          condition:
+            wifi.connected:
+          then:
+            - lvgl.label.update:
+                id: icon_wifi
+                text: "\U000F05A9"
+                text_color: ${col_green}
+          else:
+            - lvgl.label.update:
+                id: icon_wifi
+                text: "\U000F05AA"
+                text_color: ${col_red}
+      - if:
+          condition:
+            # Only Home Assistant subscribes to states; the ESPHome log viewer doesn't count
+            api.connected:
+              state_subscription_only: true
+          then:
+            - lvgl.label.update:
+                id: lbl_conn
+                text: "Home Assistant Connected"
+          else:
+            - lvgl.label.update:
+                id: lbl_conn
+                text: "Home Assistant Disconnected"
+
+lvgl:
+  displays: tft
+  touchscreens: touch
+  # Landscape. Try 270 if the image is upside down.
+  rotation: 90
+  # No PSRAM on a WROOM-32: draw in 1/8-screen strips (~38 KB)
+  buffer_size: 12%
+  bg_color: ${col_bg}
+  theme:
+    button:
+      bg_color: ${col_tile}
+      border_color: ${col_tile_border}
+      border_width: 1
+      radius: 12
+      shadow_width: 0
+      text_color: ${col_icon}
+      pressed:
+        bg_color: ${col_tile_pressed}
+      checked:
+        bg_color: ${col_tile_on}
+        text_color: ${col_yellow}
+  style_definitions:
+    - id: card_title
+      text_font: montserrat_24
+      text_color: 0xFFFFFF
+    - id: tile_name
+      text_font: montserrat_16
+      text_color: ${col_text}
+    - id: footer
+      text_font: montserrat_14
+      text_color: ${col_muted}
+    - id: status_tile
+      bg_color: ${col_tile}
+      border_color: ${col_tile_border}
+      border_width: 1
+      radius: 12
+      pad_all: 0
+  pages:
+    # ---------------- Living Room ----------------
+    - id: page_living_room
+      bg_color: ${col_bg}
+      pad_all: 0
+      scrollable: false
+      widgets:
+        - label:
+            styles: card_title
+            x: 16
+            y: 14
+            text: "Living Room"
+        - label:
+            id: icon_wifi
+            align: TOP_RIGHT
+            x: -16
+            y: 14
+            text_font: icons_24
+            text_color: ${col_muted}
+            text: "\U000F05AA"
+        - button:
+            id: btn_go_status
+            align: TOP_RIGHT
+            x: -52
+            y: 10
+            width: 144
+            height: 34
+            radius: 17
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: montserrat_16
+                  text_color: ${col_text}
+                  text: "Home Status \uF054"
+            on_short_click:
+              - lvgl.page.show:
+                  id: page_home_status
+                  animation: NONE
+        - button:
+            id: btn_tv
+            x: 16
+            y: 56
+            width: 219
+            height: 102
+            checkable: true
+            widgets:
+              - label:
+                  align: CENTER
+                  y: -14
+                  text_font: icons_32
+                  text: "\U000F1356"
+              - label:
+                  styles: tile_name
+                  align: CENTER
+                  y: 24
+                  text: "TV"
+            on_short_click:
+              - homeassistant.action:
+                  action: homeassistant.toggle
+                  data:
+                    entity_id: ${tv_entity}
+        - button:
+            id: btn_table
+            x: 245
+            y: 56
+            width: 219
+            height: 102
+            checkable: true
+            widgets:
+              - label:
+                  align: CENTER
+                  y: -14
+                  text_font: icons_32
+                  text: "\U000F05BC"
+              - label:
+                  styles: tile_name
+                  align: CENTER
+                  y: 24
+                  text: "Table"
+            on_short_click:
+              - homeassistant.action:
+                  action: homeassistant.toggle
+                  data:
+                    entity_id: ${table_entity}
+        - button:
+            id: btn_fire
+            x: 16
+            y: 168
+            width: 219
+            height: 102
+            checkable: true
+            widgets:
+              - label:
+                  align: CENTER
+                  y: -14
+                  text_font: icons_32
+                  text: "\U000F0E2E"
+              - label:
+                  styles: tile_name
+                  align: CENTER
+                  y: 24
+                  text: "Fire"
+            on_short_click:
+              - homeassistant.action:
+                  action: homeassistant.toggle
+                  data:
+                    entity_id: ${fire_entity}
+        - button:
+            id: btn_lamps
+            x: 245
+            y: 168
+            width: 219
+            height: 102
+            checkable: true
+            widgets:
+              - label:
+                  align: CENTER
+                  y: -14
+                  text_font: icons_32
+                  text: "\U000F17C8"
+              - label:
+                  styles: tile_name
+                  align: CENTER
+                  y: 24
+                  text: "Lamps"
+            on_short_click:
+              - homeassistant.action:
+                  action: homeassistant.toggle
+                  data:
+                    entity_id: ${lamps_entity}
+        - label:
+            id: lbl_conn
+            styles: footer
+            align: BOTTOM_MID
+            y: -14
+            text: "Connecting..."
+
+    # ---------------- Home Status ----------------
+    - id: page_home_status
+      bg_color: ${col_bg}
+      pad_all: 0
+      scrollable: false
+      widgets:
+        - label:
+            styles: card_title
+            x: 16
+            y: 14
+            text: "Home Status"
+        - label:
+            align: TOP_RIGHT
+            x: -16
+            y: 14
+            text_font: icons_24
+            text_color: ${col_blue}
+            text: "\U000F06A1"
+        - button:
+            id: btn_go_living
+            align: TOP_RIGHT
+            x: -52
+            y: 10
+            width: 144
+            height: 34
+            radius: 17
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: montserrat_16
+                  text_color: ${col_text}
+                  text: "\uF053 Living Room"
+            on_short_click:
+              - lvgl.page.show:
+                  id: page_living_room
+                  animation: NONE
+        - obj:
+            styles: status_tile
+            scrollable: false
+            x: 16
+            y: 56
+            width: 219
+            height: 116
+            widgets:
+              - label:
+                  id: icon_door
+                  align: CENTER
+                  y: -28
+                  text_font: icons_32
+                  text_color: ${col_muted}
+                  text: "\U000F0341"
+              - label:
+                  styles: tile_name
+                  align: CENTER
+                  y: 8
+                  text: "Front Door"
+              - label:
+                  id: lbl_door_state
+                  align: CENTER
+                  y: 32
+                  text_font: montserrat_16
+                  text_color: ${col_muted}
+                  text: "--"
+        - obj:
+            styles: status_tile
+            scrollable: false
+            x: 245
+            y: 56
+            width: 219
+            height: 116
+            widgets:
+              - label:
+                  align: CENTER
+                  y: -28
+                  text_font: icons_32
+                  text_color: ${col_amber}
+                  text: "\U000F050F"
+              - label:
+                  styles: tile_name
+                  align: CENTER
+                  y: 6
+                  text: "Temperature"
+              - label:
+                  id: lbl_temp
+                  align: CENTER
+                  y: 32
+                  text_font: montserrat_22
+                  text_color: 0xFFFFFF
+                  text: "--.-°C"
+        - button:
+            id: btn_status
+            x: 16
+            y: 184
+            width: 448
+            height: 76
+            bg_color: ${col_tile_on}
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: montserrat_20
+                  text_color: 0xFFFFFF
+                  text: "All Systems Normal"
+            on_short_click:
+              - homeassistant.action:
+                  action: homeassistant.toggle
+                  data:
+                    entity_id: ${status_button_entity}
+        - label:
+            styles: footer
+            align: BOTTOM_MID
+            y: -14
+            text: "Dashboard • Home"

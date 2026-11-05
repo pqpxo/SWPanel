@@ -1,0 +1,55 @@
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+spi:
+  - id: spi_bus
+    clk_pin: GPIO18
+    mosi_pin: GPIO23
+    miso_pin: GPIO19
+
+display:
+  - platform: mipi_spi
+    id: tft
+    spi_id: spi_bus
+    model: ILI9486
+    spi_16: true
+    cs_pin: GPIO22
+    dc_pin: GPIO21
+    reset_pin: GPIO17
+    # 20MHz corrupted the image over jumper wires; 16MHz is clean
+    data_rate: 16MHz
+    invert_colors: false
+    color_order: bgr
+    auto_clear_enabled: false
+    update_interval: never
+
+touchscreen:
+  - platform: xpt2046
+    id: touch
+    spi_id: spi_bus
+    display: tft
+    cs_pin: GPIO16
+    interrupt_pin:
+      number: GPIO4
+      mode:
+        input: true
+        pullup: true
+    threshold: 400
+    # Map raw touch to the panel's native portrait axes (320 wide, 480 tall).
+    # LVGL applies the 90 degree rotation to touches itself.
+    calibration:
+      x_min: 280
+      x_max: 3860
+      y_min: 340
+      y_max: 3860
+    # Both axes reversed on this panel (top-left was hitting bottom-right)
+    transform:
+      swap_xy: false
+      mirror_x: true
+      mirror_y: true
+    on_touch:
+      - lambda: |-
+          ESP_LOGI("cal", "x=%d y=%d x_raw=%d y_raw=%d",
+                   touch.x, touch.y, touch.x_raw, touch.y_raw);

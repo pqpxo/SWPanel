@@ -1,0 +1,8 @@
+configuration:
+  public_url:
+    name: Image address
+    description: >-
+      The address ESPHome uses to download uploaded images when it compiles, such as
+      http://192.168.1.10:8095. Leave empty to use this app's internal address.
+network:
+  8095/tcp: Image downloads for an ESPHome that can't reach this app internally

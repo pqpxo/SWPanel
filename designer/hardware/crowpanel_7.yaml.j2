@@ -1,0 +1,63 @@
+esp32:
+  board: esp32-s3-devkitc-1
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+i2c:
+  - id: i2c_bus
+    sda: GPIO19
+    scl: GPIO20
+
+output:
+  - platform: ledc
+    id: backlight_pwm
+    pin: GPIO2
+
+light:
+  - platform: monochromatic
+    id: backlight
+    name: Backlight
+    output: backlight_pwm
+    restore_mode: ALWAYS_ON
+
+# Pins and timings from Elecrow's DIS08070H wiki. ESPHome's CROWPANEL-ADVANCE-7
+# model is a different board with different pins. RPI is the driver with no init sequence.
+display:
+  - platform: mipi_rgb
+    id: tft
+    model: RPI
+    dimensions:
+      width: 800
+      height: 480
+    color_order: RGB
+    pclk_frequency: 15MHz
+    pclk_inverted: true
+    de_pin: GPIO41
+    hsync_pin: GPIO39
+    vsync_pin: GPIO40
+    pclk_pin:
+      number: GPIO0
+      ignore_strapping_warning: true
+    hsync_front_porch: 40
+    hsync_pulse_width: 48
+    hsync_back_porch: 40
+    vsync_front_porch: 1
+    vsync_pulse_width: 31
+    vsync_back_porch: 13
+    data_pins:
+      red: [GPIO14, GPIO21, GPIO47, GPIO48, {number: GPIO45, ignore_strapping_warning: true}]
+      green: [GPIO9, {number: GPIO46, ignore_strapping_warning: true}, {number: GPIO3, ignore_strapping_warning: true}, GPIO8, GPIO16, GPIO1]
+      blue: [GPIO15, GPIO7, GPIO6, GPIO5, GPIO4]
+    auto_clear_enabled: false
+    update_interval: never
+
+touchscreen:
+  - platform: gt911
+    id: touch
+    i2c_id: i2c_bus
+    display: tft

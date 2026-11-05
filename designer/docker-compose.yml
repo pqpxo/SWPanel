@@ -1,0 +1,15 @@
+services:
+  swpanel:
+    build: .
+    user: "1000:1000"
+    container_name: swpanel
+    restart: unless-stopped
+    environment:
+      PORT: ${PORT:-8095}
+      PUBLIC_URL: ${PUBLIC_URL:-}
+      HA_URL: ${HA_URL:-}
+      HA_TOKEN: ${HA_TOKEN:-}
+    ports:
+      - "${PORT:-8095}:${PORT:-8095}"
+    volumes:
+      - ./data:/app/data

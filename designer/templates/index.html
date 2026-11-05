@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SWPanel designer</title>
+  <link rel="stylesheet" href="static/app.css">
+</head>
+<body>
+  <header class="bar">
+    <h1>SWPanel</h1>
+    <select id="design-select" aria-label="Design"></select>
+    <button id="new-design">+ Design</button>
+    <span class="divider"></span>
+    <nav id="tabs" class="tabs" aria-label="Pages"></nav>
+    <button id="add-page" class="tab">+ Page</button>
+    <span class="spacer"></span>
+    <button id="undo" title="Undo (Ctrl+Z)">Undo</button>
+    <button id="redo" title="Redo (Ctrl+Y)">Redo</button>
+    <label class="check"><input id="snap" type="checkbox" checked> Snap</label>
+    <label class="check" title="Show every tile in its on colours, whatever its real state"><input id="show-on" type="checkbox"> Show tiles on</label>
+    <label class="check">Zoom
+      <select id="zoom"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select>
+    </label>
+    <span id="status" class="status" role="status"></span>
+    <button id="get-yaml" class="primary">Get YAML</button>
+  </header>
+
+  <main class="main">
+    <aside class="side left">
+      <h2>Add</h2>
+      <div id="palette"></div>
+      <h2>Elements</h2>
+      <ul id="elements" class="elements"></ul>
+    </aside>
+    <section class="stage">
+      <div id="lcd-frame" class="lcd-frame"><div id="lcd" class="lcd"></div></div>
+    </section>
+    <aside id="props" class="side right" aria-label="Settings"></aside>
+  </main>
+
+  <dialog id="yaml-dialog">
+    <div class="dialog-head">
+      <h2>ESPHome YAML</h2>
+      <button id="close-yaml">Close</button>
+    </div>
+    <ul id="yaml-errors" class="errors"></ul>
+    <textarea id="yaml-text" readonly spellcheck="false" aria-label="Generated YAML"></textarea>
+    <div class="dialog-foot">
+      <span>Paste this over your device's config in ESPHome Builder, then install it.</span>
+      <button id="copy-yaml" class="primary">Copy</button>
+      <button id="download-yaml">Download</button>
+    </div>
+  </dialog>
+
+  <dialog id="new-design-dialog" class="small">
+    <div class="dialog-head">
+      <h2>New design</h2>
+      <button id="close-new-design">Close</button>
+    </div>
+    <label class="field"><span>Display</span><select id="new-design-display"></select></label>
+    <p class="hint">The display can't be changed later, as each screen has its own size and hardware.</p>
+    <div class="dialog-foot"><span></span><button id="create-design" class="primary">Create</button></div>
+  </dialog>
+
+  <script src="static/app.js"></script>
+</body>
+</html>

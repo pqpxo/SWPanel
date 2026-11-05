@@ -1,0 +1,7 @@
+secrets.yaml
+.esphome/
+.env
+designer/data/
+__pycache__/
+dist/
+.pytest_cache/
