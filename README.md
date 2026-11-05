@@ -1,5 +1,7 @@
 # SWPanel
 
+&nbsp;
+
 Drag-and-drop designer for ESPHome touch panels. Lay out a dashboard on a true-size picture of
 your screen, see it follow your real Home Assistant states, then paste the finished YAML into
 ESPHome Builder. There's no LVGL to learn, and you don't have to write any YAML.
