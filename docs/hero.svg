@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">SWPanel</title>
+  <desc id="desc">SWPanel, a drag-and-drop designer for ESPHome and LVGL touch panels on Home Assistant. A 480 by 320 dashboard has its TV tile selected with drag handles, and three steps run from drag and drop, through live states, to Get YAML.</desc>
+
+  <rect width="1200" height="420" rx="24" fill="#13274A"/>
+
+  <g id="title-block" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <text x="64" y="78" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700" letter-spacing="1.5" fill="#9DB4E8">ESPHOME · LVGL · HOME ASSISTANT</text>
+    <text x="64" y="186" font-size="92" font-weight="700" fill="#FFFFFF" textLength="372" lengthAdjust="spacingAndGlyphs">SWPanel</text>
+    <rect x="52" y="102" width="396" height="104" fill="none" stroke="#5AB0FF" stroke-width="2"/>
+    <rect x="47" y="97" width="10" height="10" fill="#E8F3FF" stroke="#5AB0FF" stroke-width="2"/>
+    <rect x="443" y="97" width="10" height="10" fill="#E8F3FF" stroke="#5AB0FF" stroke-width="2"/>
+    <rect x="47" y="201" width="10" height="10" fill="#E8F3FF" stroke="#5AB0FF" stroke-width="2"/>
+    <rect x="443" y="201" width="10" height="10" fill="#E8F3FF" stroke="#5AB0FF" stroke-width="2"/>
+    <text x="64" y="256" font-size="30" fill="#E4E8F0">Design your touch panel by dragging.</text>
+    <text x="64" y="298" font-size="30" fill="#E4E8F0">Paste the YAML into ESPHome Builder.</text>
+  </g>
+
+  <g id="steps" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <rect x="64" y="328" width="150" height="44" rx="22" fill="#242E42" stroke="#3B4252"/>
+    <text x="139.0" y="357" text-anchor="middle" font-size="20" font-weight="600" fill="#E4E8F0">Drag &amp; drop</text>
+    <path d="M222 350H242M235 343l7 7-7 7" fill="none" stroke="#8F98AA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="250" y="328" width="150" height="44" rx="22" fill="#242E42" stroke="#3B4252"/>
+    <text x="325.0" y="357" text-anchor="middle" font-size="20" font-weight="600" fill="#E4E8F0">Live states</text>
+    <path d="M408 350H428M421 343l7 7-7 7" fill="none" stroke="#8F98AA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="436" y="328" width="126" height="44" rx="8" fill="#F2CF66" stroke="#F2CF66"/>
+    <text x="499.0" y="357" text-anchor="middle" font-size="20" font-weight="600" fill="#13274A">Get YAML</text>
+  </g>
+
+  <g id="panel" transform="translate(656 50)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <rect x="-8" y="-8" width="496" height="336" rx="6" fill="#000000"/>
+    <rect width="480" height="320" fill="#1E222B"/>
+    <text x="16" y="40" font-size="26" fill="#FFFFFF">Living Room</text>
+    <rect x="284" y="10" width="144" height="34" rx="17" fill="#2F3542" stroke="#3B4252"/>
+    <text x="356" y="33" text-anchor="middle" font-size="18" fill="#E4E8F0">Home Status ›</text>
+    <path transform="translate(438 14) scale(1.08333)" fill="#6BCB77" d="M12 21 15.61 16.22Q14.02 15 12 15Q9.98 15 8.39 16.22ZM12 3Q9 3 6.26 3.94Q3.52 4.88 1.22 6.61L3 9Q4.92 7.55 7.22 6.77Q9.52 6 12 6Q14.48 6 16.78 6.77Q19.08 7.55 21 9L22.78 6.61Q20.48 4.88 17.74 3.94Q15 3 12 3ZM12 9Q10.03 9 8.18 9.63Q6.33 10.27 4.78 11.39L6.61 13.78Q9 12 12 12Q15 12 17.39 13.78L19.22 11.39Q17.67 10.27 15.82 9.63Q13.97 9 12 9Z"/>
+    <g id="tile-tv">
+      <rect x="16" y="56" width="219" height="102" rx="12" fill="#4A5572" stroke="#3B4252"/>
+      <path transform="translate(105.5 70) scale(1.66667)" fill="#F2CF66" d="M3 11.02H0V9H3ZM3 14.02H0V15.98H3ZM5.02 5.11 2.86 3 1.45 4.41 3.61 6.56ZM9.98 5.02V2.02H8.02V5.02ZM24 9H21V11.02H24ZM15.98 5.02V2.02H14.02V5.02ZM20.39 6.56 22.55 4.41 21.14 3 18.98 5.11ZM24 14.02H21V15.98H24ZM18.98 9V15.98Q18.98 16.83 18.4 17.41Q17.81 18 17.02 18H15V20.02H9V18H6.98Q6.19 18 5.6 17.41Q5.02 16.83 5.02 15.98V9Q5.02 8.16 5.6 7.57Q6.19 6.98 6.98 6.98H17.02Q17.81 6.98 18.4 7.57Q18.98 8.16 18.98 9ZM17.02 9H6.98V15.98H17.02ZM18.98 19.88 21.14 21.98 22.55 20.58 20.39 18.47ZM3.61 18.47 1.45 20.58 2.86 21.98 5.02 19.88Z"/>
+      <text x="125.5" y="140" text-anchor="middle" font-size="20" fill="#E4E8F0">TV</text>
+    </g>
+    <g id="tile-table">
+      <rect x="245" y="56" width="219" height="102" rx="12" fill="#2F3542" stroke="#3B4252"/>
+      <path transform="translate(334.5 70) scale(1.66667)" fill="#D8DCE4" d="M2.02 6.98H21.98V9.98H20.02L21 18.98H18.52L17.95 14.02H6.05L5.48 18.98H3L3.98 9.98H2.02ZM17.48 9.98H6.52L6.28 12H17.72Z"/>
+      <text x="354.5" y="140" text-anchor="middle" font-size="20" fill="#E4E8F0">Table</text>
+    </g>
+    <g id="tile-fire">
+      <rect x="16" y="168" width="219" height="102" rx="12" fill="#4A5572" stroke="#3B4252"/>
+      <path transform="translate(105.5 182) scale(1.66667)" fill="#F2CF66" d="M21.98 21.98H2.02V20.02H21.98ZM21.98 6H2.02V3H21.98ZM20.02 6.98V18.98H17.02V11.02L16.27 10.73Q15.33 10.45 14.39 10.27Q13.12 9.98 12 9.98Q10.88 9.98 9.61 10.27Q8.67 10.45 7.73 10.73L6.98 11.02V18.98H3.98V6.98ZM14.48 14.67 14.86 15.33Q15.19 16.08 15 16.88Q14.81 17.67 14.2 18.23Q13.69 18.7 13.01 18.87Q12.33 19.03 11.62 18.96Q10.92 18.89 10.36 18.49Q9.8 18.09 9.47 17.53Q9.23 17.2 9.14 16.78L9 16.12Q8.95 15.38 9.23 14.67Q9.52 13.97 10.08 13.55Q9.8 14.06 9.87 14.7Q9.94 15.33 10.31 15.8L10.36 15.89Q10.5 15.98 10.64 15.91Q10.78 15.84 10.78 15.7V15.56Q10.36 14.53 10.66 13.43Q10.97 12.33 11.81 11.62Q12.33 11.2 12.89 11.06Q12.56 11.67 12.66 12.38Q12.75 13.08 13.27 13.55L14.16 14.3ZM13.12 17.44Q13.55 17.02 13.5 16.45V16.27Q13.41 15.84 12.94 15.42Q12.61 15.19 12.52 15L12.28 14.53Q12.09 14.95 12.19 15.47L12.23 15.75Q12.33 16.17 12.28 16.45Q12.23 16.73 12 16.99Q11.77 17.25 11.39 17.34Q11.62 17.58 11.95 17.7Q12.28 17.81 12.66 17.72Z"/>
+      <text x="125.5" y="252" text-anchor="middle" font-size="20" fill="#E4E8F0">Fire</text>
+    </g>
+    <g id="tile-lamps">
+      <rect x="245" y="168" width="219" height="102" rx="12" fill="#4A5572" stroke="#3B4252"/>
+      <path transform="translate(334.5 182) scale(1.66667)" fill="#F2CF66" d="M15 2.02 17.02 9H6.98L9 2.02ZM13.59 3.98H10.41L9.56 6.98H14.44ZM11.02 9.98H12.98V20.02H15.98V21.98H8.02V20.02H11.02Z"/>
+      <text x="354.5" y="252" text-anchor="middle" font-size="20" fill="#E4E8F0">Lamps</text>
+    </g>
+    <text x="240" y="301" text-anchor="middle" font-size="16" fill="#8F98AA">Home Assistant Connected</text>
+    <rect x="16" y="56" width="219" height="102" fill="none" stroke="#5AB0FF" stroke-width="2"/>
+    <rect x="11" y="51" width="10" height="10" fill="#E8F3FF" stroke="#5AB0FF" stroke-width="2"/>
+    <rect x="230" y="51" width="10" height="10" fill="#E8F3FF" stroke="#5AB0FF" stroke-width="2"/>
+    <rect x="11" y="153" width="10" height="10" fill="#E8F3FF" stroke="#5AB0FF" stroke-width="2"/>
+    <rect x="230" y="153" width="10" height="10" fill="#E8F3FF" stroke="#5AB0FF" stroke-width="2"/>
+    <path id="pointer" transform="translate(226 155) scale(1.5)" fill="#FFFFFF" stroke="#13274A" stroke-width="1.2" d="M13.64 21.98Q13.27 22.17 12.87 22.03Q12.47 21.89 12.33 21.52L10.12 16.78L7.64 18.8Q7.36 18.98 6.96 18.98Q6.56 18.98 6.28 18.7Q6 18.42 6 18V3Q6 2.58 6.28 2.3Q6.56 2.02 6.96 2.02Q7.36 2.02 7.64 2.25V2.2L19.12 11.86Q19.45 12.14 19.5 12.54Q19.55 12.94 19.29 13.24Q19.03 13.55 18.7 13.59L15.56 14.25L17.72 18.94Q17.95 19.31 17.79 19.71Q17.62 20.11 17.25 20.3Z"/>
+  </g>
+</svg>
